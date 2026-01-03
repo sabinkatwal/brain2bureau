@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../styles/Homepage.css";
+import StudyResources from "./Studyresources"; // Import the StudyResources component
 import Dashboard from "./Dashboard"; // Import the new Dashboard component
 
 export default function Homepage() {
@@ -9,18 +10,12 @@ export default function Homepage() {
 
   // Render different pages
   if (currentPage === "dashboard") {
-    // Render Dashboard component instead of placeholder
-    return <Dashboard goBack={() => setCurrentPage("home")} />;
-  }
+  return <Dashboard onNavigate={setCurrentPage} />;
+}
   if (currentPage === "study-resources") {
-    return (
-      <div className="page-container">
-        <h1>Study Resources Page</h1>
-        <button className="back-btn" onClick={() => setCurrentPage("home")}>
-          Back to Home
-        </button>
-      </div>
-    );
+   
+      return <StudyResources onNavigate={setCurrentPage} />;
+    
   }
   if (currentPage === "mock-exams") {
     return (

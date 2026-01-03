@@ -90,6 +90,9 @@ export default function Dashboard({ onNavigate }) {
 
           <p className="progress-message">Keep going! You're making great progress</p>
         </section>
+        <div><button className="back-btn" onClick={() => onNavigate && onNavigate("home")}>
+          Back to Home
+        </button></div>
       </main>
     </div>
   );

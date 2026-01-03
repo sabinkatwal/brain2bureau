@@ -1,15 +1,19 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Counter from './useeffect'
-import Checkbox from './checkbox'
-import Pass from './a1'
+import React, { useState } from "react";
+import Homepage from "./components/Homepage";
+import Quiz from "./components/Quiz";
 
 function App() {
-  return(
-  <Pass  />
-  )
+  const [start, setStart] = useState(false);
+
+  return (
+    <div className="App">
+      {!start ? (
+        <Homepage startQuiz={() => setStart(true)} />
+      ) : (
+        <Quiz />
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;

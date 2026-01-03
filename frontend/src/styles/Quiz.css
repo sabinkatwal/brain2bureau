@@ -1,0 +1,61 @@
+.quiz-container {
+  text-align: center;
+  margin-top: 50px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.quiz-box {
+  display: inline-block;
+  padding: 30px 40px;
+  border: 2px solid #3498db;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  background-color: #f4f6f8;
+}
+
+.question {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.options {
+  margin-top: 20px;
+}
+
+.option-button {
+  display: block;
+  padding: 12px 25px;
+  margin: 10px auto;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  border: none;
+  background-color: #3498db;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.option-button:hover {
+  background-color: #2980b9;
+}
+
+.result {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.try-again-button {
+  padding: 12px 30px;
+  margin-top: 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #ffce00;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.try-again-button:hover {
+  background-color: #ffc107;
+}

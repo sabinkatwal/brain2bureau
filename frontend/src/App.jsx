@@ -1,18 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import Homepage from "./components/Homepage";
 import Quiz from "./components/Quiz";
 
 function App() {
-  const [start, setStart] = useState(false);
-
   return (
-    <div className="App">
-      {!start ? (
-        <Homepage startQuiz={() => setStart(true)} />
-      ) : (
-        <Quiz />
-      )}
-    </div>
+    <Routes>
+      <Route path="/" element={<Homepage />} />
+      <Route path="/quiz" element={<Quiz />} />
+    </Routes>
   );
 }
 

@@ -27,13 +27,18 @@ const Quiz = () => {
           <p>
             Your score: {score} / {questions.length}
           </p>
-          <button className="try-again-button" onClick={() => window.location.reload()}>
+          <button
+            className="try-again-button"
+            onClick={() => (window.location.href = "/")}
+          >
             Try Again
           </button>
         </div>
       ) : (
         <div className="quiz-box">
-          <h2>Question {current + 1} / {questions.length}</h2>
+          <h2>
+            Question {current + 1} / {questions.length}
+          </h2>
           <p className="question">{questions[current].question}</p>
           <div className="options">
             {questions[current].options.map((option) => (

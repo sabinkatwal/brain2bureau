@@ -1,6 +1,6 @@
 // Dashboard.jsx
 import React from 'react';
-import './Dashboard.css';
+import "../styles/Dashboard.css";
 
 export default function Dashboard({ onNavigate }) {
   return (

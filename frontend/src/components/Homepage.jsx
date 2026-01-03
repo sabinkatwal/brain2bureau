@@ -1,23 +1,16 @@
 import React, { useState } from "react";
-import"../styles/Homepage.css";
+import "../styles/Homepage.css";
+import Dashboard from "./Dashboard"; // Import the new Dashboard component
 
 export default function Homepage() {
   const [currentPage, setCurrentPage] = useState("home");
 
-  const handleNavigation = (page) => {
-    setCurrentPage(page);
-  };
+  const handleNavigation = (page) => setCurrentPage(page);
 
   // Render different pages
   if (currentPage === "dashboard") {
-    return (
-      <div className="page-container">
-        <h1>Dashboard Page</h1>
-        <button className="back-btn" onClick={() => setCurrentPage("home")}>
-          Back to Home
-        </button>
-      </div>
-    );
+    // Render Dashboard component instead of placeholder
+    return <Dashboard goBack={() => setCurrentPage("home")} />;
   }
   if (currentPage === "study-resources") {
     return (

@@ -1,7 +1,7 @@
 // Dashboard.jsx
 import React from 'react';
 import "../styles/Dashboard.css";
-
+import Profile from "./Profile";
 export default function Dashboard({ onNavigate }) {
   return (
     <div className="dashboard-container">
@@ -15,6 +15,8 @@ export default function Dashboard({ onNavigate }) {
             <h1>Brain2Bureau - Loksewa Prep</h1>
             <p>Your Complete Preparation Companion</p>
           </div>
+          {/* Profile Component */}
+          <Profile onNavigate={onNavigate} />
         </div>
       </header>
 

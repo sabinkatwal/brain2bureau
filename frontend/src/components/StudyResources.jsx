@@ -1,6 +1,7 @@
 // StudyResources.jsx
 import React from 'react';
 import "../styles/StudyResources.css";
+import Profile from "./Profile";
 
 export default function StudyResources({ onNavigate }) {
   const studyMaterials = [
@@ -38,6 +39,8 @@ export default function StudyResources({ onNavigate }) {
             <h1>Brain2Bureau - Loksewa Prep</h1>
             <p>Your Complete Preparation Companion</p>
           </div>
+          {/* Profile Component */}
+          <Profile onNavigate={onNavigate} />
         </div>
       </header>
 

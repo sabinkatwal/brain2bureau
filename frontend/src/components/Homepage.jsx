@@ -74,7 +74,7 @@ export default function Homepage() {
                   <div className="profile-avatar-large">SK</div>
                   <div className="profile-info">
                     <h3>Sabin Katwal</h3>
-                    <p>@sabinkatwal3379</p>
+                    <p>sabinkatwa02@gmail.com</p>
                   </div>
                 </div>
                 

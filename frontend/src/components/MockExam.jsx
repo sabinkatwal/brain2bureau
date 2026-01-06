@@ -1,6 +1,7 @@
 // MockExam.jsx
 import React from 'react';
 import "../styles/MockExam.css";
+import Profile from "./Profile";
 
 export default function MockExam({ onNavigate }) {
   const examTypes = [
@@ -27,12 +28,14 @@ export default function MockExam({ onNavigate }) {
       <header className="mock-header">
         <div className="header-content">
           <div className="logo-icon">
-            <span>🧠</span>
+            <span>🎓</span>
           </div>
           <div className="header-text">
             <h1>Brain2Bureau - Loksewa Prep</h1>
             <p>Your Complete Preparation Companion</p>
           </div>
+          {/* Profile Component */}
+          <Profile onNavigate={onNavigate} />
         </div>
       </header>
 

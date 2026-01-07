@@ -1,12 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { HashRouter } from "react-router-dom"; // <- HashRouter for GitHub Pages
 import App from "./App";
 import "./index.css";
-import Quiz from "./components/Quiz";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
-    
+    <HashRouter>
+      <App />
+    </HashRouter>
   </React.StrictMode>
 );

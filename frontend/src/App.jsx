@@ -5,7 +5,6 @@ import "./App.css";
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Load dark mode preference from localStorage on mount
   useEffect(() => {
     const savedMode = localStorage.getItem("darkMode");
     if (savedMode !== null) {
@@ -17,7 +16,6 @@ export default function App() {
     }
   }, []);
 
-  // Apply dark mode class to html element whenever isDarkMode changes
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark-mode");

@@ -8,6 +8,31 @@ function shuffleArray(arr) {
   return arr.slice().sort(() => Math.random() - 0.5);
 }
 
+function launchConfetti(containerSelector = '.quiz-container') {
+  try {
+    const root = document.querySelector(containerSelector) || document.body;
+    const colors = ['#FF595E','#FFCA3A','#8ACB88','#1982C4','#6A4C93'];
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti-container';
+    for (let i = 0; i < 40; i++) {
+      const el = document.createElement('span');
+      el.className = 'confetti-piece';
+      const left = Math.random() * 100;
+      el.style.left = `${left}%`;
+      el.style.background = colors[Math.floor(Math.random() * colors.length)];
+      const delay = Math.random() * 0.8;
+      const dur = 2.4 + Math.random() * 1.6;
+      el.style.animationDelay = `${delay}s`;
+      el.style.animationDuration = `${dur}s`;
+      el.style.opacity = String(0.9 + Math.random() * 0.1);
+      el.style.transform = `translateY(-10px) rotate(${Math.floor(Math.random()*360)}deg)`;
+      confetti.appendChild(el);
+    }
+    root.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 4500);
+  } catch (e) { /* ignore on unsupported env */ }
+}
+
 const Quiz = ({ questions: propQuestions, onClose, secondsPerQuestion }) => {
   const secsPerQ = secondsPerQuestion ?? SECONDS_PER_QUESTION;
 
@@ -83,6 +108,11 @@ const Quiz = ({ questions: propQuestions, onClose, secondsPerQuestion }) => {
       logArr.unshift({ type: 'exam', title: `Score: ${percentage}%`, time: new Date().toISOString() });
       localStorage.setItem('activityLog', JSON.stringify(logArr.slice(0, 50)));
       try { window.dispatchEvent(new Event('activityLogChanged')); } catch(e) {}
+
+      // celebrate high scores
+      if (percentage >= 80) {
+        try { launchConfetti(); } catch(e) { /* ignore */ }
+      }
     } catch (e) {
       // ignore
     }

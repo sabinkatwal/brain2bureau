@@ -213,10 +213,22 @@ export default function TrackProgress({ onNavigate, toggleDarkMode }) {
             </div>
 
             <div style={{marginTop:12}}>
-              {/* lazy-load the ProgressGraph to avoid extra dependencies */}
+              {/* Graph */}
               <React.Suspense fallback={<div style={{padding:12}}>Loading graph…</div>}>
-                <ProgressGraph data={graphData.map(d => ({ date: d.date.slice(5), value: d.value }))} width={720} height={200} type={chartType} color={series === 'study' ? '#0284c7' : '#8b5cf6'} />
+                <ProgressGraph data={graphData.map(d => ({ date: d.date.slice(5), value: d.value }))} width={720} height={200} type={chartType} color={series === 'study' ? '#0284c7' : '#8b5cf6'} tooltipEnabled={false} legend={series === 'study' ? 'Study Minutes' : 'Exam Score (%)'} />
               </React.Suspense>
+
+              {/* Analysis: line graph of marks obtained in tests */}
+              <div className="analysis-card" style={{marginTop:18}}>
+                <h3 style={{margin:0}}>Analysis — Exam Scores</h3>
+                <div className="muted" style={{marginTop:6}}>Line chart showing recent exam marks</div>
+                <div style={{marginTop:12}}>
+                  <React.Suspense fallback={<div style={{padding:12}}>Loading chart…</div>}>
+                    <ProgressGraph data={exams.slice(-30).map(e => ({ date: new Date(e.time).toLocaleDateString(), value: e.percentage || 0 }))} width={720} height={220} type={'line'} color={'#ef4444'} tooltipEnabled={true} legend={'Exam Score (%)'} />
+                  </React.Suspense>
+                </div>
+              </div>
+
             </div>
 
           </div>

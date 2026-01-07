@@ -118,6 +118,10 @@ export default function Homepage({ isDarkMode, toggleDarkMode }) {
   if (currentPage === "settings") {
     return <Settings onNavigate={setCurrentPage} toggleDarkMode={toggleDarkMode} />;
   }
+  if (currentPage === 'news') {
+    const NewsManager = React.lazy(() => import('./NewsManager'));
+    return <React.Suspense fallback={<div style={{padding:12}}>Loading…</div>}><NewsManager onNavigate={setCurrentPage} /></React.Suspense>;
+  }
 
   const resourcesRead = Object.values(resourceStates).filter(r => r && (r.completed || (r.progress||0) >= 100)).length;
   const examsTaken = exams.length;
@@ -228,7 +232,10 @@ export default function Homepage({ isDarkMode, toggleDarkMode }) {
 
               {/* Latest News */}
               <div className="news-section" style={{marginTop:12}}>
-                <h3>Latest News</h3>
+                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                  <h3 style={{margin:0}}>Latest News</h3>
+                  <div><button className="small-button" onClick={() => handleNavigation('news')}>View all</button></div>
+                </div>
                 <div className="news-list">
                   {/* Populated from localStorage 'news' or sample */}
                   {(window.__latestNews || []).slice(0,3).map((n,i)=> (

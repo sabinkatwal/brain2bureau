@@ -27,12 +27,21 @@ export default function Homepage({ isDarkMode, toggleDarkMode }) {
     try { return JSON.parse(raw); } catch(e) { return []; }
   });
 
+  const [news, setNews] = useState(() => {
+    const raw = localStorage.getItem('news') || '[]';
+    try { return JSON.parse(raw); } catch(e) { return []; }
+  });
+
+  // expose minimal global for inline templating above (keeps rendering simple)
+  React.useEffect(() => { window.__latestNews = news.length ? news : [ { title: 'New Study Tips: Active Recall', body: 'We added a new guide on Active Recall. Check Study Resources.', time: Date.now() }, { title: 'Mock Exam Update', body: 'New mock exam added for General Knowledge with 60 questions.', time: Date.now() - 1000*60*60*24 } ]; }, [news]);
+
   useEffect(() => {
     const storageHandler = (e) => {
       if (!e) return;
       if (e.key === 'resourceStates') setResourceStates(JSON.parse(localStorage.getItem('resourceStates') || '{}'));
       if (e.key === 'examHistory') setExams(JSON.parse(localStorage.getItem('examHistory') || '[]'));
       if (e.key === 'activityLog') setActivityLog(JSON.parse(localStorage.getItem('activityLog') || '[]'));
+      if (e.key === 'news') setNews(JSON.parse(localStorage.getItem('news') || '[]'));
       if (e.key === 'profile') {
         const p = JSON.parse(localStorage.getItem('profile') || '{}');
         // update header if needed
@@ -215,6 +224,22 @@ export default function Homepage({ isDarkMode, toggleDarkMode }) {
                   </div>
                 ))}
                 {!activities.length && <div className="recent-empty">No recent activity yet — start studying or take a quiz.</div>}
+              </div>
+
+              {/* Latest News */}
+              <div className="news-section" style={{marginTop:12}}>
+                <h3>Latest News</h3>
+                <div className="news-list">
+                  {/* Populated from localStorage 'news' or sample */}
+                  {(window.__latestNews || []).slice(0,3).map((n,i)=> (
+                    <div key={i} className="news-item">
+                      <div className="news-title">{n.title}</div>
+                      <div className="news-meta"><span className="muted">{new Date(n.time).toLocaleDateString()}</span></div>
+                      <div className="news-body">{n.body}</div>
+                    </div>
+                  ))}
+                  {!((window.__latestNews || []).length) && <div className="muted">No news yet — check back later.</div>}
+                </div>
               </div>
             </div>
           </div>

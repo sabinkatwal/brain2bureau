@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import"../styles/TrackProgress.css";
 import Profile from './Profile';
+import ProgressGraph from './ProgressGraph';
 import { studyMaterials } from "../data/studyMaterials";
 
 function humanTime(iso) {
@@ -74,6 +75,40 @@ export default function TrackProgress({ onNavigate, toggleDarkMode }) {
     { category: 'Study Resources', percentage: studyPercent, color: '#0284c7' },
     { category: 'Mock Exams (avg)', percentage: examAvg, color: '#8b5cf6' }
   ];
+
+  // Graph controls
+  const [timeframe, setTimeframe] = React.useState(30); // days
+  const [chartType, setChartType] = React.useState('line');
+  const [series, setSeries] = React.useState('study'); // 'study' or 'exam'
+
+  // build date list for the timeframe
+  const days = Array.from({length: timeframe}).map((_,i) => {
+    const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - (timeframe - 1 - i));
+    return d.toISOString().slice(0,10);
+  });
+
+  // aggregate study minutes per day from activityLog (uses duration in seconds)
+  const studyByDate = {};
+  (activityLog || []).forEach(a => {
+    try {
+      const date = new Date(a.time).toISOString().slice(0,10);
+      const dur = a.duration || 0; // seconds
+      studyByDate[date] = (studyByDate[date] || 0) + Math.round((dur || 0) / 60);
+    } catch(e){}
+  });
+
+  // aggregate exam averages per day
+  const examByDate = {};
+  (exams || []).forEach(e => {
+    try {
+      const date = new Date(e.time).toISOString().slice(0,10);
+      if (!examByDate[date]) examByDate[date] = { sum: 0, count: 0 };
+      examByDate[date].sum += (e.percentage || 0);
+      examByDate[date].count += 1;
+    } catch(e){}
+  });
+
+  const graphData = days.map(d => ({ date: d, value: series === 'study' ? (studyByDate[d] || 0) : (examByDate[d] ? Math.round(examByDate[d].sum / examByDate[d].count) : 0) }));
 
   return (
     <div className="track-progress-container">
@@ -148,6 +183,42 @@ export default function TrackProgress({ onNavigate, toggleDarkMode }) {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Graph Section */}
+          <div className="graph-card">
+            <div className="graph-controls">
+              <div>
+                <label>Series: </label>
+                <select value={series} onChange={(e) => setSeries(e.target.value)}>
+                  <option value="study">Study Minutes</option>
+                  <option value="exam">Exam Score</option>
+                </select>
+              </div>
+              <div>
+                <label>Timeframe: </label>
+                <select value={timeframe} onChange={(e) => setTimeframe(parseInt(e.target.value,10))}>
+                  <option value={7}>7 days</option>
+                  <option value={30}>30 days</option>
+                  <option value={90}>90 days</option>
+                </select>
+              </div>
+              <div>
+                <label>Chart: </label>
+                <select value={chartType} onChange={(e) => setChartType(e.target.value)}>
+                  <option value="line">Line</option>
+                  <option value="bar">Bar</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{marginTop:12}}>
+              {/* lazy-load the ProgressGraph to avoid extra dependencies */}
+              <React.Suspense fallback={<div style={{padding:12}}>Loading graph…</div>}>
+                <ProgressGraph data={graphData.map(d => ({ date: d.date.slice(5), value: d.value }))} width={720} height={200} type={chartType} color={series === 'study' ? '#0284c7' : '#8b5cf6'} />
+              </React.Suspense>
+            </div>
+
           </div>
 
           {/* Recent Activity Section */}

@@ -1,5 +1,17 @@
 /* TrackProgress.css */
 
+.graph-card { background: var(--card-bg); padding:12px; border:1px solid var(--border-color); border-radius:10px; margin-top:12px; }
+.graph-controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.graph-controls label { margin-right:6px; color:var(--text-secondary); font-size:13px; }
+.graph-controls select { padding:6px 8px; border-radius:8px; border:1px solid var(--border-color); }
+
+.track-main { padding:20px; display:flex; justify-content:center; }
+.track-header .header-content { display:flex; align-items:center; gap:12px; }
+.track-progress-container { }
+
+/* keep existing responsive behavior */
+@media (max-width:900px) { .graph-controls { justify-content:flex-start; } }
+
 .track-progress-container {
   min-height: 100vh;
   background: linear-gradient(to bottom right, var(--bg-gradient-light), var(--bg-gradient-dark));

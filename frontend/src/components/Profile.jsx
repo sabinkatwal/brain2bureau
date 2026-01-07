@@ -136,8 +136,8 @@ export default function Profile({ onNavigate, toggleDarkMode }) {
 
   return (
     <div className="profile-section" ref={profileRef}>
-      <button className="profile-btn" onClick={toggleProfileMenu}>
-        <div className="profile-avatar">SK</div>
+      <button className="profile-btn" onClick={toggleProfileMenu} aria-label="User menu">
+        <div className="profile-avatar" style={{ backgroundImage: profile.avatar ? `url(${profile.avatar})` : undefined }}>{!profile.avatar && (profile.fullName ? profile.fullName.split(' ').map(n=>n[0]).slice(0,2).join('') : 'U')}</div>
       </button>
       
       {showProfileMenu && (

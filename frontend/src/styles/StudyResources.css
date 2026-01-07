@@ -168,6 +168,13 @@
 .material-card.completed {
   border-color: #10b981;
   background: linear-gradient(90deg, rgba(16,185,129,0.06), transparent);
+  animation: completedPop 420ms cubic-bezier(.2,.8,.3,1);
+}
+
+@keyframes completedPop {
+  0% { transform: scale(0.995); box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+  60% { transform: scale(1.005); }
+  100% { transform: scale(1); }
 }
 
 .material-main {
@@ -196,6 +203,61 @@
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
+}
+
+.inline-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.6rem;
+}
+
+.inline-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.inline-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg,#10b981,#34d399);
+  transition: width 0.3s ease;
+}
+
+.inline-progress-number {
+  min-width: 48px;
+  text-align: right;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.progress-controls input[type="range"] {
+  width: 100%;
+  margin-top: 0.6rem;
+}
+
+.notes-area {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.notes-area textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  min-height: 80px;
+  resize: vertical;
+}
+
+.notes-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 .material-actions {

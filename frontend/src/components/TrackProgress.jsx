@@ -1,5 +1,5 @@
 // TrackProgress.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import"../styles/TrackProgress.css";
 import Profile from './Profile';
 import { studyMaterials } from "../data/studyMaterials";
@@ -13,25 +13,60 @@ function humanTime(iso) {
   }
 }
 
-export default function TrackProgress({ onNavigate, toggleDarkMode }) {
-  const completedRaw = localStorage.getItem('completedStudy') || '[]';
-  let completed = [];
-  try { completed = JSON.parse(completedRaw); } catch(e) { completed = []; }
-  const studyPercent = Math.round((completed.length / studyMaterials.length) * 100);
+function loadStates() {
+  const raw = localStorage.getItem('resourceStates') || '{}';
+  try { return JSON.parse(raw); } catch(e) { return {}; }
+}
 
-  const examRaw = localStorage.getItem('examHistory') || '[]';
-  let exams = [];
-  try { exams = JSON.parse(examRaw); } catch(e) { exams = []; }
+export default function TrackProgress({ onNavigate, toggleDarkMode }) {
+  const [resourceStates, setResourceStates] = useState(loadStates());
+  const [exams, setExams] = useState(() => {
+    const raw = localStorage.getItem('examHistory') || '[]';
+    try { return JSON.parse(raw); } catch(e) { return []; }
+  });
+  const [activityLog, setActivityLog] = useState(() => {
+    const raw = localStorage.getItem('activityLog') || '[]';
+    try { return JSON.parse(raw); } catch(e) { return []; }
+  });
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (!e) return;
+      if (e.key === 'resourceStates') setResourceStates(loadStates());
+      if (e.key === 'examHistory') setExams(JSON.parse(localStorage.getItem('examHistory') || '[]'));
+      if (e.key === 'activityLog') setActivityLog(JSON.parse(localStorage.getItem('activityLog') || '[]'));
+    };
+    window.addEventListener('storage', handler);
+    window.addEventListener('resourceStatesChanged', () => setResourceStates(loadStates()));
+    window.addEventListener('activityLogChanged', () => setActivityLog(JSON.parse(localStorage.getItem('activityLog') || '[]')));
+    window.addEventListener('examHistoryChanged', () => setExams(JSON.parse(localStorage.getItem('examHistory') || '[]')));
+    const interval = setInterval(() => {
+      // fallback poll to update within same tab if other code doesn't trigger state
+      setResourceStates(loadStates());
+      setExams(JSON.parse(localStorage.getItem('examHistory') || '[]'));
+      setActivityLog(JSON.parse(localStorage.getItem('activityLog') || '[]'));
+    }, 1500);
+    return () => {
+      window.removeEventListener('storage', handler);
+      window.removeEventListener('resourceStatesChanged', () => setResourceStates(loadStates()));
+      window.removeEventListener('activityLogChanged', () => setActivityLog(JSON.parse(localStorage.getItem('activityLog') || '[]')));
+      window.removeEventListener('examHistoryChanged', () => setExams(JSON.parse(localStorage.getItem('examHistory') || '[]')));
+      clearInterval(interval);
+    };
+  }, []);
+
+  const studyPercent = (() => {
+    const vals = Object.values(resourceStates);
+    if (!vals || !vals.length) return 0;
+    const sum = vals.reduce((s, r) => s + (r.progress || 0), 0);
+    return Math.round(sum / vals.length);
+  })();
+
   const examCount = exams.length;
   const examAvg = examCount ? Math.round(exams.reduce((s,x) => s + (x.percentage||0), 0) / examCount) : 0;
 
-  // activities: combine activityLog and examHistory
-  const logRaw = localStorage.getItem('activityLog') || '[]';
-  let activityLog = [];
-  try { activityLog = JSON.parse(logRaw); } catch(e) { activityLog = []; }
-
   const activities = [
-    ...activityLog.map(a => ({ icon: a.type === 'completed' ? '✅' : (a.type === 'uncompleted' ? '↩️' : '•'), title: `${a.type === 'completed' ? 'Completed' : a.type === 'uncompleted' ? 'Uncompleted' : a.type}: ${a.title}`, time: a.time })),
+    ...activityLog.map(a => ({ icon: a.type === 'completed' ? '✅' : (a.type === 'uncompleted' ? '↩️' : a.type === 'exam' ? '📝' : '•'), title: `${a.type === 'completed' ? 'Completed' : a.type === 'uncompleted' ? 'Uncompleted' : a.type}: ${a.title}${a.detail ? ` — ${a.detail}` : ''}`, time: a.time })),
     ...exams.map(e => ({ icon: '📝', title: `Exam: ${e.title ?? 'Mock'} - ${e.percentage}%`, time: e.time }))
   ].sort((a,b) => new Date(b.time) - new Date(a.time)).slice(0,10);
 

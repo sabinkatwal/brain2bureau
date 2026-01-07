@@ -62,12 +62,15 @@ const Quiz = ({ questions: propQuestions, onClose }) => {
       const arr = JSON.parse(raw);
       arr.unshift({ score, total, percentage, time: new Date().toISOString(), title: quizItems[0]?.category ? quizItems[0].category : 'Mock Test' });
       localStorage.setItem('examHistory', JSON.stringify(arr.slice(0, 50)));
+      // dispatch change for same-tab listeners
+      try { window.dispatchEvent(new Event('examHistoryChanged')); } catch(e) {}
 
       // Also record an activity item
       const logRaw = localStorage.getItem('activityLog') || '[]';
       const logArr = JSON.parse(logRaw);
       logArr.unshift({ type: 'exam', title: `Score: ${percentage}%`, time: new Date().toISOString() });
       localStorage.setItem('activityLog', JSON.stringify(logArr.slice(0, 50)));
+      try { window.dispatchEvent(new Event('activityLogChanged')); } catch(e) {}
     } catch (e) {
       // ignore
     }

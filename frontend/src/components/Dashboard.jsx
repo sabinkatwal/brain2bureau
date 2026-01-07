@@ -1,5 +1,5 @@
 // Dashboard.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import "../styles/Dashboard.css";
 import Profile from "./Profile";
 import { studyMaterials } from "../data/studyMaterials";
@@ -13,19 +13,48 @@ function uniqueDays(entries) {
 }
 
 export default function Dashboard({ onNavigate, toggleDarkMode }) {
-  const completedRaw = localStorage.getItem('completedStudy') || '[]';
-  let completed = [];
-  try { completed = JSON.parse(completedRaw); } catch(e) { completed = []; }
+  const [resourceStates, setResourceStates] = useState(() => {
+    const raw = localStorage.getItem('resourceStates') || '{}';
+    try { return JSON.parse(raw); } catch(e) { return {}; }
+  });
+  const [exams, setExams] = useState(() => {
+    const raw = localStorage.getItem('examHistory') || '[]';
+    try { return JSON.parse(raw); } catch(e) { return []; }
+  });
+  const [activityLog, setActivityLog] = useState(() => {
+    const raw = localStorage.getItem('activityLog') || '[]';
+    try { return JSON.parse(raw); } catch(e) { return []; }
+  });
 
-  const examRaw = localStorage.getItem('examHistory') || '[]';
-  let exams = [];
-  try { exams = JSON.parse(examRaw); } catch(e) { exams = []; }
+  useEffect(() => {
+    const handler = (e) => {
+      if (!e) return;
+      if (e.key === 'resourceStates') setResourceStates(JSON.parse(localStorage.getItem('resourceStates') || '{}'));
+      if (e.key === 'examHistory') setExams(JSON.parse(localStorage.getItem('examHistory') || '[]'));
+      if (e.key === 'activityLog') setActivityLog(JSON.parse(localStorage.getItem('activityLog') || '[]'));
+    };
+    window.addEventListener('storage', handler);
+    window.addEventListener('resourceStatesChanged', () => setResourceStates(JSON.parse(localStorage.getItem('resourceStates') || '{}')));
+    window.addEventListener('activityLogChanged', () => setActivityLog(JSON.parse(localStorage.getItem('activityLog') || '[]')));
+    window.addEventListener('examHistoryChanged', () => setExams(JSON.parse(localStorage.getItem('examHistory') || '[]')));
+    const interval = setInterval(() => {
+      setResourceStates(JSON.parse(localStorage.getItem('resourceStates') || '{}'));
+      setExams(JSON.parse(localStorage.getItem('examHistory') || '[]'));
+      setActivityLog(JSON.parse(localStorage.getItem('activityLog') || '[]'));
+    }, 1500);
+    return () => { window.removeEventListener('storage', handler); window.removeEventListener('resourceStatesChanged', () => {}); window.removeEventListener('activityLogChanged', () => {}); window.removeEventListener('examHistoryChanged', () => {}); clearInterval(interval); };
+  }, []);
 
-  const resourcesRead = completed.length;
+  const resourcesRead = Object.values(resourceStates).filter(r => r.completed).length;
   const examsTaken = exams.length;
   const averageScore = examsTaken ? Math.round(exams.reduce((s,x) => s + (x.percentage||0),0) / examsTaken) : 0;
-  const studyDays = uniqueDays([...(JSON.parse(localStorage.getItem('activityLog') || '[]')), ...exams]);
-  const overallPercent = Math.round((resourcesRead / studyMaterials.length) * 100);
+  const studyDays = uniqueDays([...(activityLog || []), ...exams]);
+  const overallPercent = (() => {
+    const vals = Object.values(resourceStates);
+    if (!vals || !vals.length) return 0;
+    const sum = vals.reduce((s, r) => s + (r.progress || 0), 0);
+    return Math.round(sum / vals.length);
+  })();
 
   return (
     <div className="dashboard-container">
@@ -116,7 +145,7 @@ export default function Dashboard({ onNavigate, toggleDarkMode }) {
 
           <p className="progress-message">Keep going! You're making great progress</p>
         </section>
-        <div><button className="back-btn" onClick={() => onNavigate && onNavigate("home")}>
+        <div><button className="back-btn" onClick={() => onNavigate && onNavigate("home") }>
           Back to Home
         </button></div>
       </main>

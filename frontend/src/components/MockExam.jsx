@@ -1,7 +1,8 @@
 // MockExam.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import "../styles/MockExam.css";
 import Profile from "./Profile";
+import Quiz from "./Quiz";
 
 export default function MockExam({ onNavigate, toggleDarkMode }) {
   const examTypes = [
@@ -21,6 +22,8 @@ export default function MockExam({ onNavigate, toggleDarkMode }) {
       icon: '📝'
     }
   ];
+
+  const [activeExam, setActiveExam] = useState(null);
 
   return (
     <div className="mock-exam-container">
@@ -82,13 +85,20 @@ export default function MockExam({ onNavigate, toggleDarkMode }) {
               <button 
                 key={exam.id}
                 className="exam-btn"
-                onClick={() => console.log(`Starting ${exam.id}`)}
+                onClick={() => setActiveExam(exam.id)}
+                
               >
                 <span className="exam-icon">{exam.icon}</span>
                 {exam.title}
               </button>
             ))}
           </div>
+
+          {activeExam === 'general-knowledge' && (
+            <div className="quiz-wrapper">
+              <Quiz />
+            </div>
+          )}
 
           <div className="back-btn-container">
             <button 

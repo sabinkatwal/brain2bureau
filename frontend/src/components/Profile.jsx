@@ -4,14 +4,25 @@ import "../styles/Profile.css";
 export default function Profile({ onNavigate, toggleDarkMode }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [profile, setProfile] = useState(() => { try { return JSON.parse(localStorage.getItem('profile') || '{}'); } catch(e) { return {}; } });
   const profileRef = useRef(null);
 
-  // Load dark mode preference on mount
+  // Load dark mode preference on mount and listen for profile changes
   useEffect(() => {
     const savedMode = localStorage.getItem("darkMode");
     if (savedMode !== null) {
       setIsDarkMode(JSON.parse(savedMode));
     }
+    const handler = (e) => {
+      if (!e) return;
+      if (e.key === 'profile') {
+        try { setProfile(JSON.parse(localStorage.getItem('profile') || '{}')); } catch(e) {}
+      }
+    };
+    const profileHandler = () => { try { setProfile(JSON.parse(localStorage.getItem('profile') || '{}')); } catch(e) {} };
+    window.addEventListener('storage', handler);
+    window.addEventListener('profileChanged', profileHandler);
+    return () => { window.removeEventListener('storage', handler); window.removeEventListener('profileChanged', profileHandler); };
   }, []);
 
   const toggleProfileMenu = () => {
@@ -56,12 +67,16 @@ export default function Profile({ onNavigate, toggleDarkMode }) {
         alert('Switch account functionality');
         break;
       case 'appearance':
-        if (toggleDarkMode) {
-          toggleDarkMode();
-        }
+        // toggle and persist
+        const nm = !isDarkMode;
+        setIsDarkMode(nm);
+        localStorage.setItem('darkMode', JSON.stringify(nm));
+        if (toggleDarkMode) toggleDarkMode();
         break;
       case 'language':
-        alert('Change language functionality');
+        const lang = prompt('Select language code (en / ne)', profile.language || 'en');
+        if (!lang) return;
+        try { const p = {...profile, language: lang}; setProfile(p); localStorage.setItem('profile', JSON.stringify(p)); window.dispatchEvent(new Event('profileChanged')); } catch(e) {}
         break;
       default:
         break;
@@ -71,6 +86,8 @@ export default function Profile({ onNavigate, toggleDarkMode }) {
   const toggleAppearance = () => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
+    localStorage.setItem('darkMode', JSON.stringify(newMode));
+    if (toggleDarkMode) toggleDarkMode();
   };
 
   // Update isDarkMode when localStorage changes (from App)
@@ -97,10 +114,10 @@ export default function Profile({ onNavigate, toggleDarkMode }) {
       {showProfileMenu && (
         <div className="profile-dropdown">
           <div className="profile-header">
-            <div className="profile-avatar-large">SK</div>
+            <div className="profile-avatar-large" style={{ backgroundImage: profile.avatar ? `url(${profile.avatar})` : undefined }}>{!profile.avatar && (profile.fullName ? profile.fullName.split(' ').map(n=>n[0]).slice(0,2).join('') : 'U')}</div>
             <div className="profile-info">
-              <h3>Sabin Katwal</h3>
-              <p>@sabinkatwal3379</p>
+              <h3>{profile.fullName || 'Your Name'}</h3>
+              <p>@{profile.username || 'username'}</p>
             </div>
           </div>
           

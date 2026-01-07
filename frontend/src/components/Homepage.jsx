@@ -5,6 +5,7 @@ import Dashboard from "./Dashboard";
 import TrackProgress from "./TrackProgress";
 import MockExam from "./MockExam";
 import Profile from "./Profile"; // Import Profile component
+import MyAccount from "./MyAccount";
 
 function humanTime(iso) {
   try { return new Date(iso).toLocaleString(); } catch(e) { return iso; }
@@ -69,6 +70,9 @@ export default function Homepage({ isDarkMode, toggleDarkMode }) {
   }
   if (currentPage === "track-progress") {
     return <TrackProgress onNavigate={setCurrentPage} toggleDarkMode={toggleDarkMode} />;
+  }
+  if (currentPage === "my-account") {
+    return <MyAccount onNavigate={setCurrentPage} toggleDarkMode={toggleDarkMode} />;
   }
 
   const resourcesRead = Object.values(resourceStates).filter(r => r && (r.completed || (r.progress||0) >= 100)).length;

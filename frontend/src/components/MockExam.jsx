@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import "../styles/MockExam.css";
 import Profile from "./Profile";
 import Quiz from "./Quiz";
+import { questions as allQuestions } from "../data/questions";
 
 export default function MockExam({ onNavigate, toggleDarkMode }) {
   const examTypes = [
@@ -24,6 +25,9 @@ export default function MockExam({ onNavigate, toggleDarkMode }) {
   ];
 
   const [activeExam, setActiveExam] = useState(null);
+  const [showConfig, setShowConfig] = useState(false);
+  const [numQuestions, setNumQuestions] = useState(5);
+  const [quizQuestions, setQuizQuestions] = useState(null);
 
   return (
     <div className="mock-exam-container">
@@ -85,7 +89,13 @@ export default function MockExam({ onNavigate, toggleDarkMode }) {
               <button 
                 key={exam.id}
                 className="exam-btn"
-                onClick={() => setActiveExam(exam.id)}
+                onClick={() => {
+                  const poolLength = exam.id === 'full-mock' ? allQuestions.length : allQuestions.filter(q => q.category === exam.id).length;
+                  setActiveExam(exam.id);
+                  setShowConfig(true);
+                  setQuizQuestions(null);
+                  setNumQuestions(Math.min(5, poolLength || 5));
+                }}
                 
               >
                 <span className="exam-icon">{exam.icon}</span>
@@ -94,9 +104,42 @@ export default function MockExam({ onNavigate, toggleDarkMode }) {
             ))}
           </div>
 
-          {activeExam === 'general-knowledge' && (
+          {activeExam && showConfig && (
+            <div className="exam-config">
+              <h3>Preparing: {examTypes.find(e => e.id === activeExam)?.title}</h3>
+              <p>Select number of questions:</p>
+              <input
+                type="number"
+                min={1}
+                max={activeExam === 'full-mock' ? allQuestions.length : allQuestions.filter(q => q.category === activeExam).length}
+                value={numQuestions}
+                onChange={(e) => setNumQuestions(Number(e.target.value))}
+              />
+              <div className="config-buttons">
+                <button
+                  className="start-btn"
+                  onClick={() => {
+                    const pool = activeExam === 'full-mock' ? allQuestions : allQuestions.filter(q => q.category === activeExam);
+                    const selection = [...pool].sort(() => Math.random() - 0.5).slice(0, Math.min(numQuestions, pool.length));
+                    setQuizQuestions(selection);
+                    setShowConfig(false);
+                  }}
+                >
+                  Start Test
+                </button>
+                <button className="cancel-btn" onClick={() => { setActiveExam(null); setShowConfig(false); }}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {quizQuestions && (
             <div className="quiz-wrapper">
-              <Quiz />
+              <Quiz
+                questions={quizQuestions}
+                onClose={() => { setActiveExam(null); setQuizQuestions(null); setShowConfig(false); }}
+              />
             </div>
           )}
 

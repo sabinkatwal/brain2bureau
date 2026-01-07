@@ -3,14 +3,17 @@
 .myaccount-card { width:100%; max-width:980px; background:var(--card-bg); border-radius:12px; box-shadow:0 12px 40px rgba(16,24,40,0.06); padding:20px; }
 .myaccount-header { display:flex; gap:16px; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:16px; }
 .myaccount-avatar { display:flex; gap:12px; align-items:center; }
-.avatar-preview { width:84px; height:84px; border-radius:12px; background: linear-gradient(135deg,#667eea,#764ba2); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:20px; background-size:cover; background-position:center; }
-.myaccount-info h2 { margin:0; font-size:1.25rem; }
-.myaccount-info .muted { color:var(--text-secondary); font-size:0.9rem; }
-.myaccount-stats { display:grid; grid-template-columns: repeat(4,1fr); gap:12px; padding:16px 0; }
-.stat { background: rgba(0,0,0,0.02); padding:12px; border-radius:8px; text-align:center; }
-.stat-number { font-weight:800; font-size:1.1rem; }
+.avatar-preview { width:112px; height:112px; border-radius:14px; background: linear-gradient(135deg,#667eea,#764ba2); display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:26px; background-size:cover; background-position:center; box-shadow: 0 8px 20px rgba(15,23,42,0.06); }
+.myaccount-info h2 { margin:0; font-size:1.35rem; }
+.myaccount-info .muted { color:var(--text-secondary); font-size:0.95rem; }
+.myaccount-stats { display:grid; grid-template-columns: repeat(4,1fr); gap:12px; padding:12px 0; }
+.stat { background: rgba(0,0,0,0.02); padding:10px; border-radius:10px; text-align:center; }
+.stat-number { font-weight:800; font-size:1.12rem; }
 .stat-label { font-size:0.85rem; color:var(--text-secondary); }
-.myaccount-sections { display:grid; grid-template-columns: 1fr 360px; gap:16px; margin-top:12px; }
+.myaccount-sections { display:grid; grid-template-columns: 1fr 320px; gap:16px; margin-top:12px; }
+.footer-card { font-size:0.95rem; color:var(--text-secondary); }
+.small-button { padding:8px 10px; border-radius:8px; background:transparent; border:1px solid var(--border-color); cursor:pointer; }
+.back-button { padding:8px 12px; border-radius:8px; background:transparent; border:1px solid var(--border-color); cursor:pointer; font-weight:700; }
 .section { background:var(--card-bg); padding:12px; border-radius:10px; border:1px solid var(--border-color); }
 .perf-row { display:flex; gap:16px; }
 .recent-list { display:flex; flex-direction:column; gap:8px; }

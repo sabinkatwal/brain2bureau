@@ -186,49 +186,9 @@ export default function MyAccount({ onNavigate, toggleDarkMode }) {
             </div>
           </div>
 
-          <div className="section">
-            <h3>Settings</h3>
-            <div className="settings-row">
-              <div>Appearance</div>
-              <div>
-                <label className="switch"><input type="checkbox" checked={isDarkMode} onChange={() => { const nm = !isDarkMode; setIsDarkMode(nm); localStorage.setItem('darkMode', JSON.stringify(nm)); if (toggleDarkMode) toggleDarkMode(); }} /><span className="slider" /></label>
-              </div>
-            </div>
-
-            <div className="settings-row">
-              <div>Language</div>
-              <div>
-                <select value={formProfile.language || profile.language || 'en'} onChange={(e) => setFormProfile({...formProfile, language: e.target.value})}>
-                  <option value="en">English</option>
-                  <option value="ne">नेपाली</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="settings-row">
-              <div>Daily Goal</div>
-              <div>
-                <input type="number" min={5} value={formProfile.dailyGoalMinutes || profile.dailyGoalMinutes || 20} onChange={(e) => setFormProfile({...formProfile, dailyGoalMinutes: parseInt(e.target.value || '0',10)})} style={{width:80}} /> minutes
-              </div>
-            </div>
-
-            <div className="settings-row">
-              <div>Daily Reminder</div>
-              <div>
-                <label className="switch"><input type="checkbox" checked={!!(formProfile.dailyReminder ?? profile.dailyReminder)} onChange={(e) => setFormProfile({...formProfile, dailyReminder: e.target.checked})} /><span className="slider" /></label>
-              </div>
-            </div>
-
-          </div>
-
-          <div className="section actions">
-            <button className="danger" onClick={resetProgress}>Reset Progress</button>
-            <button onClick={logout}>Sign Out</button>
+          <div style={{gridColumn:'1 / -1', marginTop:12, padding:12, borderTop:'1px solid var(--border-color)'}} className="footer-card">
             <div className="muted">App Version: v0.1.0</div>
-            <div className="muted">Motivation: {(() => { const overall = (Object.values(resourceStates).length ? Math.round(Object.values(resourceStates).reduce((s,r)=>s+(r.progress||0),0)/Object.values(resourceStates).length) : 0); if (overall >= 80) return 'Great work — keep it up!'; if (overall >=50) return 'Nice progress — stay consistent.'; return 'Keep going — small steps every day.'; })()}</div>
-            <div style={{marginTop:8}}>
-              <button className="small-button" onClick={() => { const p = {...profile, ...formProfile}; setProfile(p); localStorage.setItem('profile', JSON.stringify(p)); try{ window.dispatchEvent(new Event('profileChanged')); } catch(e){} setToast({ open: true, message: 'Profile saved' }); setTimeout(() => setToast({ open: false, message: '' }), 2000); }}>Save Settings</button>
-            </div>
+            <div className="muted" style={{marginTop:6}}>Motivation: {(() => { const overall = (Object.values(resourceStates).length ? Math.round(Object.values(resourceStates).reduce((s,r)=>s+(r.progress||0),0)/Object.values(resourceStates).length) : 0); if (overall >= 80) return 'Great work — keep it up!'; if (overall >=50) return 'Nice progress — stay consistent.'; return 'Keep going — small steps every day.'; })()}</div>
           </div>
         </div>
 
